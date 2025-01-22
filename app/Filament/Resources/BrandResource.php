@@ -12,12 +12,14 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\BrandResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\BrandResource\RelationManagers;
+use Filament\Forms\Components\Grid;
 
 class BrandResource extends Resource
 {
@@ -25,32 +27,42 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
+                Section::make([
+                    Grid::make()
+                    ->schema([
+
+                        TextInput::make('name')
                         ->required()
                         ->maxLength(255)
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
-                    TextInput::make('slug')
+                        TextInput::make('slug')
                         ->required()
                         ->disabled()
                         ->maxLength(255)
                         ->dehydrated()
                         ->unique(Brand::class, 'slug', ignoreRecord: true),
+                    ]),
 
-                    // dd()
-                    FileUpload::make('image')
+                        // dd()
+                        FileUpload::make('image')
                         ->image()
                         ->directory('brand'),
                     Toggle::make('is_active')
-                        ->required()
-                        ->default(true)
+                    ->required()
+                    ->default(true)
+                ]),
                 ]);
-    }
+            }
 
     public static function table(Table $table): Table
     {

@@ -35,6 +35,8 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
+    protected static ?int $navigationSort = 4;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -78,7 +80,7 @@ class ProductResource extends Resource
                         TextInput::make('price')
                             ->numeric()
                             ->required()
-                            ->prefix('RP')
+                            ->prefix('IDR')
                     ]),
 
                     Section::make('Associations')->schema([
@@ -125,7 +127,7 @@ class ProductResource extends Resource
                 TextColumn::make('brand.name')
                     ->sortable(),
                 TextColumn::make('price')
-                    ->money('INR')
+                    ->money('IDR')
                     ->sortable(),
                 IconColumn::make('is_featured')
                     ->boolean(),
